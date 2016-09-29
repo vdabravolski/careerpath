@@ -9,6 +9,9 @@ class ScalatraBootstrap extends LifeCycle {
     val mongoClient=MongoClient("10.6.198.231", 27017)
 
     val accountColl = mongoClient("test")("accounts")
-    context.mount(new CareerServlet(accountColl), "/*")
+
+    //mounting multiple controllers
+    context.mount(new CareerServlet(accountColl), "/*") // controller for HTML pages
+    context.mount(new CareerAPIServlet(accountColl),"/api") //controller for API
   }
 }
