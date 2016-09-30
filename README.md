@@ -1,5 +1,12 @@
 # CareerPath #
 
+## Intentions ##
+This is a very basic project for learning purposes only. It's built using following tech stack:
+* Scala
+* MongoDB
+* BackboneJS	
+* Scalatra
+
 ## Build & Run ##
 
 ```sh
