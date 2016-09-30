@@ -18,6 +18,7 @@ class CareerServlet(mongoColl : MongoCollection) extends CareerpathStack {
     val q = MongoDBObject("name" -> account)
     val accountRecord = mongoColl.findOne(q)
 
+
     <html>
       <body>
         <h1>Hello, {person}!</h1>
