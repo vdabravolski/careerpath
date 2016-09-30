@@ -12,6 +12,6 @@ class ScalatraBootstrap extends LifeCycle {
 
     //mounting multiple controllers
     context.mount(new CareerServlet(accountColl), "/*") // controller for HTML pages
-    context.mount(new CareerAPIServlet(accountColl),"/api") //controller for API
+    context.mount(new CareerAPIServlet(accountColl),"/api/*") //controller for API
   }
 }

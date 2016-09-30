@@ -11,7 +11,7 @@ class CareerServlet(mongoColl : MongoCollection) extends CareerpathStack {
   get("/dashboard") {
 
     val person:String = params.getOrElse("person", halt(404, <h1>Pass person's name or go away!</h1>))
-    val account:String = params.getOrElse("account", "all")
+    val account:String = params.getOrElse("account", halt(404, <h1>Pass account name or go away!</h1>))
     val project:String = params.getOrElse("project", "all")
 
     // start retrieving data from MongoDB!

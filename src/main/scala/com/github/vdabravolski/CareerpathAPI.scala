@@ -20,11 +20,28 @@ class CareerAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet with
     contentType = formats("json")
   }
 
-
-  get("/api") {
-    //todo: something useful goes here. Sample below of how to handle parameters in the request.
-    // params.get("name") match {
-    //   case Some(name) => FlowerData.all filter (_.name.toLowerCase contains name.toLowerCase())
-    //   case None => FlowerData.all}
+  get("/accounts") {
+     params.get("name") match {
+       case Some(name) => name.toLowerCase()
+       case None => "empty"}
   }
+
+  get("/projects"){
+    //todo is coming
+    "functionality is coming"
+  }
+
+  post("/addAccount"){
+    var name=params("name")
+    var status=params("status")
+    var newObj=MongoDBObject("name"->name, "status" -> status)
+    mongoColl+=newObj
+    "successfully added new account:"+name
+  }
+
+  post("/addProject"){
+    //todo
+  }
+
+
 }
