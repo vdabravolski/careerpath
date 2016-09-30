@@ -31,8 +31,8 @@ object CareerpathBuild extends Build {
         "org.eclipse.jetty" % "jetty-webapp" % "9.2.15.v20160210" % "container",
         "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
         "org.mongodb" %% "casbah" % "3.1.1",
-        "org.scalatra" %% "scalatra-json" % "2.3.0",
-        "org.json4s"   %% "json4s-native" % "3.2.9"
+        "org.scalatra" %% "scalatra-json" % ScalatraVersion,
+        "org.json4s"   %% "json4s-native" % "3.3.0"
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
         Seq(
