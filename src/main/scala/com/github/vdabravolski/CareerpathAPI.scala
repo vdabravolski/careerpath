@@ -21,9 +21,14 @@ class CareerAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet with
   }
 
   get("/accounts") {
-     params.get("name") match {
-       case Some(name) => name.toLowerCase()
-       case None => "empty"}
+    val q = MongoDBObject("name" -> params("name"))
+
+//    mongoColl.findOne(q).get("status") // how to retrieve form the Mongo query
+
+    mongoColl.findOne(q) match {
+      case Some(x) => Account(mongoColl.findOne(q).get("name"),mongoColl.findOne(q).get("status"))
+      case None => APIMessage("account",params("name"),"not found")
+    }
   }
 
   get("/projects"){
@@ -36,12 +41,20 @@ class CareerAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet with
     var status=params("status")
     var newObj=MongoDBObject("name"->name, "status" -> status)
     mongoColl+=newObj
-    "successfully added new account:"+name
+    APIMessage("account",name, "saved")
   }
 
   post("/addProject"){
     //todo
   }
 
-
+  // below is a routing to handle errors.
+  error {
+  case e: Throwable => {
+    redirect("/api")
+  }
 }
+}
+
+case class Account(name: Any, status:Any)
+case class APIMessage(entityType: String, entityID: String, entityStatus: String)
