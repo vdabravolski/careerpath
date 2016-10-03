@@ -6,5 +6,18 @@
     <script src="/assets/js/libs/backbone.js"></script>
     <!-- Application core (Order matters) -->
     <script src="/src/application.js"></script>
+
+
+    <h1>Dashboard page</h1>
+    <div id="dashboard"></div>
+    <button id="addAccount">Add new account</button>
+    <script type="text/template" id="item-template">
+      <div class="account-view">
+        <label><%= title %></label>
+        <button id='viewDetails'>View details</button>
+      </div>
+    </script>
+
+
   </body>
 </html>

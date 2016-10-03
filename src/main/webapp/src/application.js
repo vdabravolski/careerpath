@@ -1,60 +1,84 @@
 (function($){
-  var project = Backbone.Model.extend({
-    defaults: {
-      type: 'project'
-    }
-  }),
 
-  account = Backbone.Model.extend({
-    defaults: {
-      type: 'account'
-    }
+  var project = Backbone.Model.extend({
+    url: '/api/projects'
   });
 
-  var career = Backbone.Collection.extend({
-    model: function(model, options) {
-    switch(model.type) {
-        case 'project':
-            return new project(model, options);
-            break;
-        case 'account':
-            return new folder(model, options);
-            break;
-          }
-        }
+  var account = Backbone.Model.extend({
+    url: '/api/accounts'
+  });
+
+  var accountsColl = Backbone.Collection.extend({
+    model: account,
+    url: '/api/accounts'
       });
 
+  var projectsColl = Backbone.Collection.extend({
+    model: project,
+    url: '/api/projects'
+  });
 
-  // **ListView class**: Our main app view.
-  var ListView = Backbone.View.extend({
-    el: $('body'), // attaches `this.el` to an existing element.
+  var Accounts = new accountsColl;
+  var Projects = new projectsColl;
 
-    events: {
-      'click button#viewDetails':'viewDetails'
-    },
-
-    // `initialize()`: Automatically called upon instantiation. Where you make all types of bindings, _excluding_ UI events, such as clicks, etc.
-    initialize: function(){
-      _.bindAll(this, 'render'); // fixes loss of context for 'this' within methods
-      this.collection=new Career();
-
-      this.collection.bind('getAccountData',this.viewDetails) //biding viewDetails of View to 'getAccountData' of the Collection.
-      // todo: need to link Collection to API.
-
-       this.render(); // not all views are self-rendering. This one is.
-    },
-    // `render()`: Function in charge of rendering the entire view in `this.el`. Needs to be manually called by the user.
-    render: function(){
-      $(this.el).append("<h1>an empty backbone index page</h1>");
-      $(this.el).append("<button id='viewDetails'>View details</button>");
-      $(this.el).append("<ul></ul>");
+  var AccountView=Backbone.View.extend({
+    tagname: 'li',
+    accountTpl: _.template( $('#item-template').html() ),
+    events:{
+      'keypress #viewDetails': 'viewDetails'
     },
 
     viewDetails: function(){
-      $('ul',this.el).append("<li>details are coming</li>");
+      //is coming.
+    },
+
+    // Called when the view is first created
+    initialize: function() {
+      this.$el = $('#dashboard');
+    // Later we'll look at:
+    // this.listenTo(someCollection, 'all', this.render);
+    // but you can actually run this example right now by
+    // calling todoView.render();
+  },
+
+    render: function() {
+      this.$el.html(this.accountTpl( this.model.attributes ) )
+      return this
     }
+
+
+
   });
 
-  // **listView instance**: Instantiate main app view.
-  var listView = new ListView();
+  var accountView= new AccountView({model: account})
+
+  // //todo: need to rewrite complete Dashboard view below.
+  // // **DashboardView class**: Our main app view.
+  // var DashboardView = Backbone.View.extend({
+  //   el: $('body'), // attaches `this.el` to an existing element.
+  //   events: {
+  //     'click button#viewDetails':'viewDetails'
+  //   },
+  //
+  //   // `initialize()`: Automatically called upon instantiation. Where you make all types of bindings, _excluding_ UI events, such as clicks, etc.
+  //   initialize: function(){
+  //     _.bindAll(this, 'render'); // fixes loss of context for 'this' within methods
+  //     this.collection=new accountsColl();
+  //
+  //     this.collection.bind('getAccountData',this.viewDetails) //biding viewDetails of View to 'getAccountData' of the Collection.
+  //     // todo: need to link Collection to API.
+  //
+  //      this.render(); // not all views are self-rendering. This one is.
+  //   },
+  //   // `render()`: Function in charge of rendering the entire view in `this.el`. Needs to be manually called by the user.
+  //   render: function(){
+  //     $(this.el).append("<h1>an empty backbone index page</h1>");
+  //     $(this.el).append("<button id='viewDetails'>View details</button>");
+  //     $(this.el).append("<ul></ul>");
+  //   }
+  //
+  // });
+  //
+  // // **DashboardView instance**: Instantiate main app view.
+  // var DashboardView = new DashboardView();
 })(jQuery);
