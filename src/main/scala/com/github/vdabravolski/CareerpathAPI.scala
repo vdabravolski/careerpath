@@ -25,36 +25,40 @@ class AccountAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet wit
 
   get("/") {
     //for { x <- mongoColl} yield Account(x.get("name"),x.get("status"))
-    val results=mongoColl.find()
-    val allAccounts= AccountsColl
+    var results=mongoColl.find()
+    var allAccounts= AccountsColl
+    allAccounts.all=ListBuffer()
     for (x <- results){
       allAccounts.all += convertDBObjectToAccount(x)
     }
     allAccounts.all
   }
 
-  get("/:name") {
-    val q = MongoDBObject("name" -> params("name"))
+  get("/:id") {
+    var q = MongoDBObject("name" -> params("id"))
+    var id = params("id")
 
     mongoColl.findOne(q) match {
       case Some(x) => Account(mongoColl.findOne(q).get("name"),mongoColl.findOne(q).get("status"))
-      case None => SuccessMessage("account",params("name"),"not found")
+      case None => SuccessMessage("account",id,"not found")
     }
   }
 
-  post("/addAccount"){
-    var name=params("name")
+  post("/"){
+    var id=params("id")
     var status=params("status")
-    var newObj=MongoDBObject("name"->name, "status" -> status)
+    var newObj=MongoDBObject("name"->id, "status" -> status)
     mongoColl+=newObj
-    SuccessMessage("account",name, "saved")
+    SuccessMessage("account",id, "saved")
   }
 
-  delete("/deleteAccount/:name"){
-    val q = MongoDBObject("name" -> params("name"))
+  delete("/:id"){
+    var q = MongoDBObject("name" -> params("id"))
+    var id = params("id")
+
     mongoColl.findAndRemove(q) match {
-      case Some(x) => SuccessMessage("project", params("name"), "was deleted")
-      case None => SuccessMessage("project",params("name"),"not found")
+      case Some(x) => SuccessMessage("project", id, "was deleted")
+      case None => SuccessMessage("project",id,"not found")
     }
   }
 
@@ -66,9 +70,9 @@ class AccountAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet wit
 }
 
   def convertDBObjectToAccount(obj: MongoDBObject): Account ={
-    val name = obj.getAs[String]("name").get
-    val status = obj.getAs[String]("status").get
-    Account(name, status)
+    var id = obj.getAs[String]("name").get
+    var status = obj.getAs[String]("status").get
+    Account(id, status)
   }
 }
 
@@ -83,38 +87,41 @@ class ProjectAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet wit
   }
 
   get("/"){
-    val results=mongoColl.find()
-    val allProjects= ProjectsColl
+    var results=mongoColl.find()
+    var allProjects= ProjectsColl
+    allProjects.all=ListBuffer()
     for (x <- results){
       allProjects.all += convertDBObjectToProject(x)
     }
     allProjects.all
   }
 
-  get("/:name"){
-    val q = MongoDBObject("name" -> params("name"))
+  get("/:id"){
+    var id= params("id")
+    val q = MongoDBObject("name" -> id)
 
     mongoColl.findOne(q) match {
       case Some(x) => convertDBObjectToProject(x)
-      case None => SuccessMessage("project",params("name"),"not found")
+      case None => SuccessMessage("project",id,"not found")
     }
   }
 
-  post("/addProject"){
-    var name=params("name")
+  post("/"){
+    var id=params("id")
     var status=params("status")
     var clients=params("clients")
     var team=params("team")
-    var newObj=MongoDBObject("name"->name, "status" -> status, "clients" -> clients, "team" -> team)
+    var newObj=MongoDBObject("name"->id, "status" -> status, "clients" -> clients, "team" -> team)
     mongoColl+=newObj
-    SuccessMessage("project",name, "saved")
+    SuccessMessage("project",id, "saved")
   }
 
-  delete("/deleteProject/:name"){
-    val q = MongoDBObject("name" -> params("name"))
+  delete("/:id"){
+    var id=params("id")
+    val q = MongoDBObject("name" -> id)
     mongoColl.findAndRemove(q) match {
-      case Some(x) => SuccessMessage("project", params("name"), "was deleted")
-      case None => SuccessMessage("project",params("name"),"not found")
+      case Some(x) => SuccessMessage("project", id, "was deleted")
+      case None => SuccessMessage("project",id,"not found")
     }
   }
 
@@ -126,19 +133,19 @@ class ProjectAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet wit
   }
 
   def convertDBObjectToProject(obj: MongoDBObject): Project ={
-    val name = obj.getAs[String]("name").get
-    val status = obj.getAs[String]("status").get
-    val clients = obj.getAs[String]("clients").get
-    val team = obj.getAs[String]("team").get
-    Project(name, status,clients, team)
+    var id = obj.getAs[String]("name").get
+    var status = obj.getAs[String]("status").get
+    var clients = obj.getAs[String]("clients").get
+    var team = obj.getAs[String]("team").get
+    Project(id, status,clients, team)
   }
 
 }
 
 
-case class Account(name: Any, status:Any)
+case class Account(id: Any, status:Any)
 object AccountsColl {var all = ListBuffer[Account]()}
-case class Project(name: Any, status:Any, clients:Any, team: Any)
+case class Project(id: Any, status:Any, clients:Any, team: Any)
 object ProjectsColl {var all = ListBuffer[Project]()}
 case class SuccessMessage(entityType: String, entityID: String, entityStatus: String)
 case class ErrorMessage(message: String, details: String = "")
