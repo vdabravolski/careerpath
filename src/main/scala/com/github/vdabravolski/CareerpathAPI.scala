@@ -23,8 +23,6 @@ class CareerAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet with
   get("/accounts") {
     val q = MongoDBObject("name" -> params("name"))
 
-//    mongoColl.findOne(q).get("status") // how to retrieve form the Mongo query
-
     mongoColl.findOne(q) match {
       case Some(x) => Account(mongoColl.findOne(q).get("name"),mongoColl.findOne(q).get("status"))
       case None => APIMessage("account",params("name"),"not found")
@@ -33,7 +31,7 @@ class CareerAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet with
 
   get("/projects"){
     //todo is coming
-    "functionality is coming"
+    APIMessage("project","","fetching this entity type is not supported currently.")
   }
 
   post("/addAccount"){
@@ -45,7 +43,7 @@ class CareerAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet with
   }
 
   post("/addProject"){
-    //todo
+    APIMessage("project","","adding this entity type is not supported currently.")
   }
 
   // below is a routing to handle errors.
