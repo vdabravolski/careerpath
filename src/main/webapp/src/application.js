@@ -1,4 +1,4 @@
-(function($){
+// (function($){
 
   var project = Backbone.Model.extend({
     url: '/api/projects'
@@ -81,4 +81,4 @@
   //
   // // **DashboardView instance**: Instantiate main app view.
   // var DashboardView = new DashboardView();
-})(jQuery);
+// })(jQuery);
