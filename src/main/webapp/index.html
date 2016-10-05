@@ -5,7 +5,7 @@
   </head>
   <body>
 
-    <!-- todo: pieace of templating which needs to be updated -->
+    <!-- todo: piece of templating which needs to be updated -->
     <script type="text/template" id="account-template">
       <div class="account-view">
         <label><%= title %></label>
@@ -26,7 +26,11 @@
     <script src="/assets/js/libs/underscore.js"></script>
     <script src="/assets/js/libs/backbone.js"></script>
     <!-- Application core (Order matters) -->
+    <script src="/src/models.js"></script>
+    <script src="/src/collections.js"></script>
+    <script src="/src/views.js"></script>
     <script src="/src/application.js"></script>
+    
 
 
     <!-- The actual HTML code-->
@@ -38,7 +42,7 @@
       </header>
     </section>
 
-    <section id="main">
+    <section id="main-content">
         <ul id="account-list"></ul>
     </section>
 

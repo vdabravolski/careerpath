@@ -22,6 +22,9 @@ object CareerpathBuild extends Build {
       version := Version,
       scalaVersion := ScalaVersion,
       resolvers += Classpaths.typesafeReleases,
+      javaOptions ++= Seq(
+          "-Xdebug",
+          "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000"),
       resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
       libraryDependencies ++= Seq(
         "org.scalatra" %% "scalatra" % ScalatraVersion,

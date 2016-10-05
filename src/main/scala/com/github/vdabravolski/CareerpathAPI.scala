@@ -7,6 +7,7 @@ import com.mongodb.casbah.Imports._
 import scala.collection.mutable.ListBuffer
 
 
+
 // TODO:
 //1.   extend number of data fiels of account entity. Right now only status and name is collected.
 //2. Generate page with API documentation using Swagger.
@@ -45,13 +46,17 @@ class AccountAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet wit
   }
 
   post("/"){
-    var id=params("id")
+//    var id=params("id")
+    println("############")
+    println("printin request body"+request.body)
+    println(params.get("status"))
+    var id="js test"
     var status=params("status")
     var newObj=MongoDBObject("name"->id, "status" -> status)
     mongoColl+=newObj
     SuccessMessage("account",id, "saved")
   }
-
+  
   delete("/:id"){
     var q = MongoDBObject("name" -> params("id"))
     var id = params("id")
@@ -65,7 +70,7 @@ class AccountAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet wit
   //below is a routing to handle errors.
   error {
   case e: Throwable => {
-    ErrorMessage("Error happened during handling of account entity", e.toString())
+    halt(500,ErrorMessage("Error happened during handling of account entity", e.toString()))
   }
 }
 
@@ -128,7 +133,7 @@ class ProjectAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet wit
   //below is a routing to handle errors.
   error {
   case e: Throwable => {
-    ErrorMessage("Error happened during handling of project entity", e.toString())
+    halt(500,ErrorMessage("Error happened during handling of project entity", e.toString()))
   }
   }
 

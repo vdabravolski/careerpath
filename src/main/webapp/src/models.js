@@ -1,13 +1,21 @@
-// js/models/todo.js
+// src/models.js
 
- var app = app || {};
+var app = app || {};
 
- // Project and Account Model
-
- var project = Backbone.Model.extend({
-   url: '/api/projects'
+app.project = Backbone.Model.extend({
+   url: '/api/projects',
+//   defaults: {
+//	   id: '',
+//	   status: '',
+//	   clients: '',
+//	   team: ''
+//   }
  });
 
- var account = Backbone.Model.extend({
-   url: '/api/accounts'
+app.account = Backbone.Model.extend({
+   url: '/api/accounts',
+//   defaults: {
+//	   id: '',
+//	   status: ''
+//   }
  });

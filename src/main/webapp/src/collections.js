@@ -1,9 +1,6 @@
 // src/collections.js
 
-// initialize app if one doesn't exist.
 var app = app || {};
-
-
 // Accounts and Projects collections.
 var accountsColl = Backbone.Collection.extend({
   model: app.account,
@@ -15,7 +12,9 @@ var projectsColl = Backbone.Collection.extend({
   url: '/api/projects'
 });
 
+app.AccountColl = new accountsColl();
+app.ProjectColl = new projectsColl();
 
 // Create our global collection of **Todos**.
-app.accountsColl = new accountsColl();
-app.projectsColl = new projectsColl();
+//app.accountsColl = new accountsColl();
+//app.projectsColl = new projectsColl();
