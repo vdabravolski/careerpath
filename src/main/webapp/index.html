@@ -1,15 +1,25 @@
 <html>
+
+  <head>
+    <link rel="stylesheet" href="assets/css/main.css">
+  </head>
   <body>
-    <h1>Dashboard page</h1>
-    <div id="dashboard"></div>
-    <button id="addAccount">Add new account</button>
-    <script type="text/template" id="item-template">
+
+    <!-- todo: pieace of templating which needs to be updated -->
+    <script type="text/template" id="account-template">
       <div class="account-view">
         <label><%= title %></label>
-        <button id='viewDetails'>View details</button>
+        <button id='view-collapse'></button>
+        <ul  id='projects'></ul>
       </div>
     </script>
 
+    <script type="text/template" id="project-template">
+      <div class="project-view">
+        <label><%= title %></label>
+        <button id='view-collapse'></button>
+      </div>
+    </script>
 
     <!-- Third-Party Libraries (Order matters) -->
     <script src="/assets/js/libs/jquery.js"></script>
@@ -19,7 +29,23 @@
     <script src="/src/application.js"></script>
 
 
+    <!-- The actual HTML code-->
+    <section id="careerpath">
+      <header id="header">
+        <h1>Career dashboard page</h1>
+        <button id="add-new">Add new achievement</button>
+        <button id="view-all">View all</button>
+      </header>
+    </section>
 
+    <section id="main">
+        <ul id="account-list"></ul>
+    </section>
+
+    <div id="info">
+      <p>Written by <a href="https://github.com/vdabravolski">Vadim</a></p>
+      <p>Bending the learning curve</p>
+    </div>
 
   </body>
 </html>
