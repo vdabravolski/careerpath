@@ -3,7 +3,7 @@
 var app = app || {};
 
 app.project = Backbone.Model.extend({
-   url: '/api/projects',
+   urlRoot: '/api/projects',
 //   defaults: {
 //	   id: '',
 //	   status: '',
@@ -13,7 +13,7 @@ app.project = Backbone.Model.extend({
  });
 
 app.account = Backbone.Model.extend({
-   url: '/api/accounts',
+   urlRoot: '/api/accounts',
 //   defaults: {
 //	   id: '',
 //	   status: ''

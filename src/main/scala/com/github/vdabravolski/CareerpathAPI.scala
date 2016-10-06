@@ -9,8 +9,9 @@ import scala.collection.mutable.ListBuffer
 
 
 // TODO:
-//1.   extend number of data fiels of account entity. Right now only status and name is collected.
+//1. Extend number of data fiels of account entity. Right now only status and name is collected.
 //2. Generate page with API documentation using Swagger.
+//3. Update Project API similar to account
 
 
 // this is routes class
@@ -25,9 +26,8 @@ class AccountAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet wit
   }
 
   get("/") {
-    //for { x <- mongoColl} yield Account(x.get("name"),x.get("status"))
     var results=mongoColl.find()
-    var allAccounts= AccountsColl
+    var allAccounts= AccountsColl //collection of Account instances
     allAccounts.all=ListBuffer()
     for (x <- results){
       allAccounts.all += convertDBObjectToAccount(x)
@@ -36,35 +36,40 @@ class AccountAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet wit
   }
 
   get("/:id") {
-    var q = MongoDBObject("name" -> params("id"))
-    var id = params("id")
+    var objectId = new ObjectId(params("id"))
+    var q = MongoDBObject("_id" -> objectId)
 
     mongoColl.findOne(q) match {
-      case Some(x) => Account(mongoColl.findOne(q).get("name"),mongoColl.findOne(q).get("status"))
-      case None => SuccessMessage("account",id,"not found")
+      case Some(result) => convertDBObjectToAccount(result)
+      case None => SuccessMessage("account",params("id"),"not found")
     }
   }
 
   post("/"){
-//    var id=params("id")
-    println("############")
-    println("printin request body"+request.body)
-    println(params.get("status"))
-    var id="js test"
-    var status=params("status")
-    var newObj=MongoDBObject("name"->id, "status" -> status)
+    var newAccount=parsedBody.extract[Account]
+    var newObj=MongoDBObject("name"->newAccount.name, "status" -> newAccount.status)
     mongoColl+=newObj
-    SuccessMessage("account",id, "saved")
+    SuccessMessage("account",newObj.getAs[ObjectId]("_id").get.toString, "created")
   }
-  
+
   delete("/:id"){
-    var q = MongoDBObject("name" -> params("id"))
-    var id = params("id")
+    var objectId = new ObjectId(params("id"))
+    var q = MongoDBObject("_id" -> objectId)
 
     mongoColl.findAndRemove(q) match {
-      case Some(x) => SuccessMessage("project", id, "was deleted")
-      case None => SuccessMessage("project",id,"not found")
+      case Some(result) => SuccessMessage("project", params("id"), "was deleted")
+      case None => SuccessMessage("project",params("id"),"not found")
     }
+  }
+
+  put("/:id"){
+    var newAccount=parsedBody.extract[Account]
+    var objectId = new ObjectId(params("id"))
+    var q = MongoDBObject("_id" -> objectId)
+    var newAccountDB=MongoDBObject("name"->newAccount.name, "status" -> newAccount.status)
+
+    mongoColl.findAndModify(q, newAccountDB)
+    SuccessMessage("account",params("id"), "updated")
   }
 
   //below is a routing to handle errors.
@@ -75,9 +80,10 @@ class AccountAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet wit
 }
 
   def convertDBObjectToAccount(obj: MongoDBObject): Account ={
-    var id = obj.getAs[String]("name").get
+    var id = obj.getAs[ObjectId]("_id").get.toString()
+    var name = obj.getAs[String]("name").get
     var status = obj.getAs[String]("status").get
-    Account(id, status)
+    Account(id, name, status)
   }
 }
 
@@ -102,35 +108,46 @@ class ProjectAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet wit
   }
 
   get("/:id"){
-    var id= params("id")
-    val q = MongoDBObject("name" -> id)
+    var objectId = new ObjectId(params("id"))
+    var q = MongoDBObject("_id" -> objectId)
 
     mongoColl.findOne(q) match {
-      case Some(x) => convertDBObjectToProject(x)
-      case None => SuccessMessage("project",id,"not found")
+      case Some(result) => convertDBObjectToProject(result)
+      case None => SuccessMessage("project",params("id"),"not found")
     }
   }
 
   post("/"){
-    var id=params("id")
-    var status=params("status")
-    var clients=params("clients")
-    var team=params("team")
-    var newObj=MongoDBObject("name"->id, "status" -> status, "clients" -> clients, "team" -> team)
+    var newProject=parsedBody.extract[Project]
+
+    var newObj=MongoDBObject("name"->newProject.name, "status" -> newProject.status,
+      "team" -> newProject.team, "clients" -> newProject.clients)
     mongoColl+=newObj
-    SuccessMessage("project",id, "saved")
+    SuccessMessage("project",newObj.getAs[ObjectId]("_id").get.toString, "created")
   }
 
   delete("/:id"){
-    var id=params("id")
-    val q = MongoDBObject("name" -> id)
+    var objectId = new ObjectId(params("id"))
+    var q = MongoDBObject("_id" -> objectId)
+
     mongoColl.findAndRemove(q) match {
-      case Some(x) => SuccessMessage("project", id, "was deleted")
-      case None => SuccessMessage("project",id,"not found")
+      case Some(result) => SuccessMessage("project", params("id"), "was deleted")
+      case None => SuccessMessage("project",params("id"),"not found")
     }
   }
 
-  //below is a routing to handle errors.
+  put("/:id"){
+    var newProject=parsedBody.extract[Project]
+    var objectId = new ObjectId(params("id"))
+    var q = MongoDBObject("_id" -> objectId)
+    var newProjectDB=MongoDBObject("name"->newProject.name, "status" -> newProject.status
+      ,"team" -> newProject.team, "clients" -> newProject.clients)
+
+    mongoColl.findAndModify(q, newProjectDB)
+    SuccessMessage("project",params("id"), "updated")
+  }
+
+  // //below is a routing to handle errors.
   error {
   case e: Throwable => {
     halt(500,ErrorMessage("Error happened during handling of project entity", e.toString()))
@@ -138,19 +155,20 @@ class ProjectAPIServlet(mongoColl : MongoCollection) extends ScalatraServlet wit
   }
 
   def convertDBObjectToProject(obj: MongoDBObject): Project ={
-    var id = obj.getAs[String]("name").get
+    var id = obj.getAs[ObjectId]("_id").get.toString()
+    var name = obj.getAs[String]("name").get
     var status = obj.getAs[String]("status").get
     var clients = obj.getAs[String]("clients").get
     var team = obj.getAs[String]("team").get
-    Project(id, status,clients, team)
+    Project(id, name, status, clients, team)
   }
 
 }
 
 
-case class Account(id: Any, status:Any)
+case class Account(_id: Any ="", name: String, status: String)
 object AccountsColl {var all = ListBuffer[Account]()}
-case class Project(id: Any, status:Any, clients:Any, team: Any)
+case class Project(_id: Any="", name: String, status:String, clients:String, team:String)
 object ProjectsColl {var all = ListBuffer[Project]()}
 case class SuccessMessage(entityType: String, entityID: String, entityStatus: String)
 case class ErrorMessage(message: String, details: String = "")
