@@ -7,11 +7,12 @@ app.AppView=Backbone.View.extend({
 
   //biding to root element in index.html
   tagName: 'body',
-  
+
   // NB. These are the DOM events (not Backbone Event API).
   events: {
-	  'keypress #add-new':'addNew',
-	  'keypress #view-all':'viewAll'  
+	  'click #add-new':'addNew',
+	  'click #view-all':'viewAll',
+    'keydown':'keyAction'
   },
 
   initialize: function(){
@@ -19,29 +20,42 @@ app.AppView=Backbone.View.extend({
     //e.g. this.allCheckbox = this.$('#toggle-all')[0];
 
     //Views is listening to the 'add' events in the accountColl
-    this.listenTo(app.accountsColl, 'add', this.addOne);
+
+    console.log(this.events)
+    // this.listenTo(app.account, 'addNew', this.addNew);
+    this.listenTo(app.accountsColl, 'fetch', this.viewAll);
+    this.viewAll()
   },
-  
+
   addNew: function(account){
-	  var view=new app.AccountView({model:account});
-	  this.$('#projects').append(view.render().el)
+    console.log(this.$('#add-new'))
+    // var view=new app.AccountView({model:account});
+	  // this.$('#projects').append(view.render().el)
+
   },
-  
-  viewAll: function(){
-	  //wip
+
+  viewAll: function(accountColl){
+	  console.log("viewAll was pressed")
+  },
+
+  keyAction: function(e) {
+  if (e.which === ENTER_KEY) {
+    console.log('blabla');
   }
+}
+
 
 });
 
 
-// a few to handle an individual account items
-app.AccountView=Backbone.View.extend({
-	el: '#account-list',
-	statsTemplate: _.template( $('#account-template').html() ),
-	
-})
-
-// a few to handle an individual project items
-app.ProjectView=Backbone.View.extend({
-	
-})
+// // a few to handle an individual account items
+// app.AccountView=Backbone.View.extend({
+// 	el: '#account-list',
+// 	statsTemplate: _.template( $('#account-template').html() ),
+//
+// })
+//
+// // a few to handle an individual project items
+// app.ProjectView=Backbone.View.extend({
+//
+// })
