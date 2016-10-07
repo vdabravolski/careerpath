@@ -3,46 +3,40 @@
 var app = app || {};
 
 // this is a main view of the application
-app.AppView=Backbone.View.extend({
+var AppView=Backbone.View.extend({
 
   //biding to root element in index.html
-  tagName: 'body',
+  el: $('body'),
 
   // NB. These are the DOM events (not Backbone Event API).
   events: {
 	  'click #add-new':'addNew',
 	  'click #view-all':'viewAll',
-    'keydown':'keyAction'
+    'click #test':'test'
   },
 
   initialize: function(){
     //need to bind key elements in the view to app attributes
-    //e.g. this.allCheckbox = this.$('#toggle-all')[0];
+    this.listenTo(app.AccountsColl, 'fetch', this.viewAll);
+    this.listenTo(app.AccountsColl, 'change', this.test);
 
-    //Views is listening to the 'add' events in the accountColl
-
-    console.log(this.events)
-    // this.listenTo(app.account, 'addNew', this.addNew);
-    this.listenTo(app.accountsColl, 'fetch', this.viewAll);
-    this.viewAll()
   },
 
-  addNew: function(account){
-    console.log(this.$('#add-new'))
-    // var view=new app.AccountView({model:account});
+  addNew: function(){
+    console.log("addNew fired")
+    //bugs ahead var view=new app.AccountView({model:account});
 	  // this.$('#projects').append(view.render().el)
 
   },
 
-  viewAll: function(accountColl){
+  viewAll: function(){
+    app.AccountColl.fetch()
 	  console.log("viewAll was pressed")
   },
 
-  keyAction: function(e) {
-  if (e.which === ENTER_KEY) {
-    console.log('blabla');
+  test: function(){
+    alert('test')
   }
-}
 
 
 });

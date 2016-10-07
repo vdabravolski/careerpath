@@ -3,6 +3,6 @@
 
  $(function() {
 	 // Kick things off by creating the **App**.
-	 new app.AppView();
+   app.AppView = new AppView();
    console.log("App view created")
   });
